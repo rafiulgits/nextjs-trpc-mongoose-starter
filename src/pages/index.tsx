@@ -6,7 +6,10 @@ export default function Home() {
   const userCreate = trpc.users.createUser.useMutation();
 
   const handleCreate = async () => {
-    const res = await userCreate.mutateAsync();
+    const res = await userCreate.mutateAsync({
+      name: "Rafiul Islam",
+      email: "rafi@mail.com",
+    });
     alert(JSON.stringify(res));
   };
 
