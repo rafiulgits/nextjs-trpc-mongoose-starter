@@ -12,5 +12,19 @@ export const userRouter = trpcRouter({
     input(z.object({ name: z.string(), email: z.string() })).
     mutation(async (data) => {
       return UserController.create(data.input)
-    })
+    }),
+
+  updateUser: publicProcedure.
+    input(z.object({ id: z.string(), name: z.string(), email: z.string() })).
+    mutation(async (data) => {
+      return UserController.update(data.input)
+    }),
+
+  removeUser: publicProcedure.
+    input(z.string()).
+    mutation(async (data) => {
+      return UserController.remove(data.input)
+    }),
+
+
 })
