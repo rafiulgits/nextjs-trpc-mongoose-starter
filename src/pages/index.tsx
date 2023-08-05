@@ -4,9 +4,20 @@ import { Col, Row, Space, Table } from "antd";
 import { UserDto } from "@/dtos/user";
 import { UserUpdateAction } from "@/components/UserUpdateAction";
 import { UserDeleteAction } from "@/components/UserDeleteAction";
+import { useEffect } from "react";
+import { useUserContext } from "@/store/UserContext";
 
 export default function Home() {
-  const usersRes = trpc.users.getUsers.useQuery();
+  const { dispatch, state } = useUserContext();
+  const trpcClient = trpc.useContext();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const res = await trpcClient.users.getUsers.fetch();
+      dispatch({ type: "Set", payload: { users: res } });
+    };
+    fetchUsers();
+  }, []);
 
   return (
     <Row justify="center" style={{ marginTop: "3rem" }}>
@@ -17,7 +28,7 @@ export default function Home() {
         <br />
         <Table
           size="small"
-          dataSource={usersRes.data}
+          dataSource={state.users}
           columns={[
             { title: "ID", dataIndex: "id", key: "id" },
             { title: "Name", dataIndex: "name", key: "name" },

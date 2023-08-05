@@ -4,6 +4,7 @@ import { UserUpsertForm } from "./UserUpsertForm";
 import { UserCreateDto, UserDto } from "@/dtos/user";
 import { trpc } from "@/utils/trpc";
 import { useEffect, useState } from "react";
+import { useUserContext } from "@/store/UserContext";
 
 interface Props {
   user: UserDto;
@@ -11,6 +12,7 @@ interface Props {
 
 export const UserUpdateAction = (props: Props) => {
   const { visible, toggle } = useToggle();
+  const { dispatch } = useUserContext();
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
   const updateUser = trpc.users.updateUser.useMutation();
@@ -29,7 +31,7 @@ export const UserUpdateAction = (props: Props) => {
     setIsLoading(true);
     const res = await updateUser.mutateAsync({ ...data, id: props.user.id });
     message.success("User Updated");
-    // insert into global state
+    dispatch({ type: "Update", payload: { user: res } });
     setIsLoading(false);
     handleClose();
   };
